@@ -86,7 +86,7 @@ cd server
 npm run dev
 ```
 
-The backend will run on `http://localhost:5000`
+The backend will run on `http://localhost:9001`
 
 **Terminal 2 - Frontend:**
 ```bash
