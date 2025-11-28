@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { itemsAPI } from '../services/api';
 import ItemCard from '../components/ItemCard';
-import { Search, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 const Home = () => {
   const [lostItems, setLostItems] = useState([]);
@@ -36,7 +36,8 @@ const Home = () => {
   }
 
   return (
-    <div className="home-container">
+    <div className="home-wrapper">
+      {/* HERO */}
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">Campus Lost & Found</h1>
@@ -45,46 +46,59 @@ const Home = () => {
             smart matching system do the rest.
           </p>
           <div className="hero-actions">
-            <Link to="/report" className="btn btn-primary">Report an Item</Link>
-            <Link to="/lost" className="btn btn-secondary">Browse Lost Items</Link>
+            <Link to="/report" className="btn btn-primary">
+              Report an Item
+            </Link>
+            <Link to="/lost" className="btn btn-secondary">
+              Browse Lost Items
+            </Link>
           </div>
         </div>
       </section>
 
-      {error && (
-        <div className="error-banner">
-          <AlertCircle size={20} />
-          <span>{error}</span>
-        </div>
-      )}
+      {/* MAIN CONTENT UNDER HERO */}
+      <div className="home-content">
+        {error && (
+          <div className="error-banner">
+            <AlertCircle size={20} />
+            <span>{error}</span>
+          </div>
+        )}
 
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">Recently Lost Items</h2>
-          <Link to="/lost" className="section-link">View All</Link>
-        </div>
-        <div className="items-grid">
-          {lostItems.length > 0 ? (
-            lostItems.map((item) => <ItemCard key={item._id} item={item} />)
-          ) : (
-            <p className="empty-message">No lost items yet.</p>
-          )}
-        </div>
-      </section>
+        {/* Recently Lost */}
+        <section className="home-section">
+          <div className="section-header">
+            <h2 className="section-title">Recently Lost Items</h2>
+            <Link to="/lost" className="section-link">
+              View All
+            </Link>
+          </div>
+          <div className="items-grid">
+            {lostItems.length > 0 ? (
+              lostItems.map((item) => <ItemCard key={item._id} item={item} />)
+            ) : (
+              <p className="empty-message">No lost items yet.</p>
+            )}
+          </div>
+        </section>
 
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">Recently Found Items</h2>
-          <Link to="/found" className="section-link">View All</Link>
-        </div>
-        <div className="items-grid">
-          {foundItems.length > 0 ? (
-            foundItems.map((item) => <ItemCard key={item._id} item={item} />)
-          ) : (
-            <p className="empty-message">No found items yet.</p>
-          )}
-        </div>
-      </section>
+        {/* Recently Found */}
+        <section className="home-section">
+          <div className="section-header">
+            <h2 className="section-title">Recently Found Items</h2>
+            <Link to="/found" className="section-link">
+              View All
+            </Link>
+          </div>
+          <div className="items-grid">
+            {foundItems.length > 0 ? (
+              foundItems.map((item) => <ItemCard key={item._id} item={item} />)
+            ) : (
+              <p className="empty-message">No found items yet.</p>
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

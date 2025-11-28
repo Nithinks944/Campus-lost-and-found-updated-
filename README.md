@@ -15,6 +15,7 @@ A full-stack web application that helps students report and find lost or found i
 ## Tech Stack
 
 ### Backend
+
 - Node.js & Express
 - MongoDB with Mongoose
 - JWT for authentication
@@ -22,6 +23,7 @@ A full-stack web application that helps students report and find lost or found i
 - Multer for file handling
 
 ### Frontend
+
 - React.js with Hooks
 - React Router for navigation
 - Axios for API requests
@@ -72,6 +74,7 @@ PORT=5000
 ```
 
 **To get Cloudinary credentials:**
+
 1. Sign up at [cloudinary.com](https://cloudinary.com)
 2. Go to your Dashboard
 3. Copy your Cloud Name, API Key, and API Secret
@@ -81,6 +84,7 @@ PORT=5000
 ### Option 1: Run Backend and Frontend Separately
 
 **Terminal 1 - Backend:**
+
 ```bash
 cd server
 npm run dev
@@ -89,6 +93,7 @@ npm run dev
 The backend will run on `http://localhost:9001`
 
 **Terminal 2 - Frontend:**
+
 ```bash
 cd client
 npm run dev
@@ -99,6 +104,7 @@ The frontend will run on `http://localhost:5173`
 ### Option 2: Run Both Concurrently (if you set up concurrently)
 
 From the root directory:
+
 ```bash
 npm run dev
 ```
@@ -162,10 +168,12 @@ campus-lost-and-found/
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 
 ### Items
+
 - `GET /api/items` - Get all items (with filters)
 - `GET /api/items/:id` - Get single item
 - `POST /api/items` - Create new item (auth required)
@@ -173,9 +181,11 @@ campus-lost-and-found/
 - `PATCH /api/items/:id/status` - Update item status (auth required)
 
 ### Upload
+
 - `POST /api/upload` - Upload image (auth required)
 
 ### Admin
+
 - `GET /api/admin/items/pending` - Get unverified items (admin only)
 - `PATCH /api/admin/items/:id/verify` - Verify item (admin only)
 - `DELETE /api/admin/items/:id` - Delete item (admin only)
@@ -193,6 +203,7 @@ When a user reports a lost or found item, the system:
 5. Displays potential matches to the user
 
 The Jaccard similarity compares word sets:
+
 ```
 similarity = (common words) / (total unique words)
 ```
@@ -200,12 +211,14 @@ similarity = (common words) / (total unique words)
 ## Features in Detail
 
 ### For Students
+
 - Report lost or found items with photos
 - View potential matches automatically
 - Search and filter all items
 - Update item status (open/matched/closed)
 
 ### For Admins
+
 - View all unverified items
 - Approve legitimate posts
 - Delete suspicious or inappropriate content
