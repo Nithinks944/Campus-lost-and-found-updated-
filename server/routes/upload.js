@@ -1,10 +1,14 @@
 import express from 'express';
 import multer from 'multer';
+import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '../middleware/auth.js';
 
+dotenv.config(); // ensure .env is loaded in this module
+
 const router = express.Router();
 
+// Configure Cloudinary with env vars
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -14,7 +18,7 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -38,10 +42,12 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
       (error, result) => {
         if (error) {
           console.error('Cloudinary upload error:', error);
-          return res.status(500).json({ message: 'Failed to upload image' });
+          return res
+            .status(500)
+            .json({ message: 'Failed to upload image', error: error.message });
         }
 
-        res.json({
+        return res.json({
           imageUrl: result.secure_url,
           imagePublicId: result.public_id,
         });
