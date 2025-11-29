@@ -239,3 +239,12 @@ MIT License - feel free to use this project for learning or production.
 ## Support
 
 For issues or questions, please open an issue on the GitHub repository.
+
+Developed by:
+
+NITHIN KATARIYA V
+
+Student Developer
+
+🔗 GitHub: https://github.com/Nithin-jain22
+🔗 LinkedIn: https://www.linkedin.com/in/nithin-katariya-v/
