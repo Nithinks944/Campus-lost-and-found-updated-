@@ -242,9 +242,10 @@ For issues or questions, please open an issue on the GitHub repository.
 
 Developed by:
 
-NITHIN KATARIYA V
+NITHIN K S
 
 Student Developer
 
-🔗 GitHub: https://github.com/Nithin-jain22
-🔗 LinkedIn: https://www.linkedin.com/in/nithin-katariya-v/
+🔗 GitHub: https://github.com/Nithinks944
+🔗 LinkedIn: www.linkedin.com/in/nithin-ks-133871315
+
