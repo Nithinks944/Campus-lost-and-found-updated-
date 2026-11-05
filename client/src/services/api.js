@@ -15,6 +15,9 @@ api.interceptors.request.use((config) => {
 });
 
 export const authAPI = {
+  sendOtp: (data) => api.post('/auth/send-otp', data),
+  registerWithOtp: (data) => api.post('/auth/register-with-otp', data),
+  loginWithOtp: (data) => api.post('/auth/login-with-otp', data),
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
 };
@@ -22,6 +25,9 @@ export const authAPI = {
 export const itemsAPI = {
   getAll: (params) => api.get('/items', { params }),
   getById: (id) => api.get(`/items/${id}`),
+  getZoneStats: () => api.get('/items/stats/zones'),
+  submitClaim: (id, data) => api.post(`/items/${id}/claim`, data),
+  reviewClaim: (id, claimId, status) => api.patch(`/items/${id}/claims/${claimId}`, { status }),
   create: (data) => api.post('/items', data),
   update: (id, data) => api.put(`/items/${id}`, data),
   updateStatus: (id, status) => api.patch(`/items/${id}/status`, { status }),

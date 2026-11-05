@@ -1,24 +1,67 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { itemsAPI, uploadAPI } from '../services/api';
-import { Upload, AlertCircle, CheckCircle } from 'lucide-react';
+import { GlassPanel } from '../components/spatial/GlassPanel';
+import { GlassButton } from '../components/spatial/GlassButton';
+import { GlassInput } from '../components/spatial/GlassInput';
+import { TiltCard } from '../components/spatial/TiltCard';
+import {
+  Upload,
+  AlertCircle,
+  CheckCircle,
+  MapPin,
+  ShieldQuestion,
+  Sparkles,
+  Tag,
+  Calendar,
+  Image as ImageIcon,
+} from 'lucide-react';
 
-const ReportItem = () => {
+export const ReportItem = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     type: 'lost',
     category: 'Other',
     location: '',
+    campusZone: 'General Campus Area',
+    secretQuestion: '',
     dateLostOrFound: '',
   });
+
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [matches, setMatches] = useState([]);
   const [showMatches, setShowMatches] = useState(false);
+
+  useEffect(() => {
+    const prefillZone = searchParams.get('zone');
+    const prefillFoundItem = searchParams.get('foundItem');
+    const prefillOwnerTag = searchParams.get('ownerTag');
+
+    if (prefillZone) {
+      setFormData((prev) => ({ ...prev, campusZone: prefillZone, location: prefillZone }));
+    }
+
+    if (prefillFoundItem) {
+      setFormData((prev) => ({
+        ...prev,
+        type: 'found',
+        title: `Found ${prefillFoundItem} (QR Tagged)`,
+        description: `Found item tagged via QR badge for ${prefillOwnerTag || 'Student'}. Please verify ownership.`,
+        category: prefillFoundItem.includes('Laptop')
+          ? 'Electronics'
+          : prefillFoundItem.includes('Card')
+          ? 'ID Card'
+          : 'Other',
+      }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,174 +117,244 @@ const ReportItem = () => {
     }
   };
 
-  const handleViewMatches = () => {
-    navigate('/');
-  };
-
   if (showMatches) {
     return (
-      <div className="page-container">
-        <div className="matches-container">
-          <div className="success-message">
-            <CheckCircle size={48} />
-            <h2>Item Reported Successfully!</h2>
-            <p>We found {matches.length} potential match(es) for your item.</p>
+      <div className="spatial-page-container">
+        <GlassPanel elevation="elevated" className="matches-glass-stage">
+          <div className="matches-hero-header">
+            <div className="matches-icon-halo">
+              <CheckCircle size={36} color="var(--accent-green)" />
+            </div>
+            <h2 className="spatial-hero-title" style={{ fontSize: '2rem' }}>
+              Item Reported Successfully!
+            </h2>
+            <p className="spatial-subtitle">
+              Smart Jaccard Engine detected {matches.length} potential correspondence(s).
+            </p>
           </div>
 
-          <div className="matches-grid">
+          <div className="spatial-items-grid" style={{ marginTop: '2rem' }}>
             {matches.map((match) => (
-              <div key={match.item._id} className="match-card">
-                <div className="match-score">Match: {match.score}%</div>
+              <div key={match.item._id} className="match-glass-card vision-glass-card">
+                <div className="match-score-pill">
+                  <Sparkles size={13} /> {match.score}% Similarity
+                </div>
                 {match.item.imageUrl && (
-                  <img src={match.item.imageUrl} alt={match.item.title} />
+                  <img src={match.item.imageUrl} alt={match.item.title} className="match-image-preview" />
                 )}
-                <h3>{match.item.title}</h3>
-                <p>{match.item.description}</p>
-                <div className="match-details">
+                <h3 className="match-item-title">{match.item.title}</h3>
+                <p className="match-item-desc">{match.item.description}</p>
+                <div className="match-meta-line">
                   <span>{match.item.category}</span>
+                  <span>•</span>
                   <span>{match.item.location}</span>
                 </div>
-                <button
+                <GlassButton
+                  variant="secondary"
+                  size="sm"
                   onClick={() => navigate(`/items/${match.item._id}`)}
-                  className="btn btn-secondary"
+                  style={{ width: '100%', marginTop: '0.75rem' }}
                 >
-                  View Details
-                </button>
+                  View Details &amp; Verify
+                </GlassButton>
               </div>
             ))}
           </div>
 
-          <button onClick={handleViewMatches} className="btn btn-primary">
-            Go to Home
-          </button>
-        </div>
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <GlassButton variant="primary" size="lg" onClick={() => navigate('/')}>
+              Proceed to Home Feed
+            </GlassButton>
+          </div>
+        </GlassPanel>
       </div>
     );
   }
 
   return (
-    <div className="page-container">
-      <h1 className="page-title">Report Lost or Found Item</h1>
+    <div className="spatial-page-container" style={{ maxWidth: '900px' }}>
+      <div className="spatial-catalog-header">
+        <div className="spatial-eyebrow-pill">
+          <Sparkles size={14} /> Item Incident Registry
+        </div>
+        <h1 className="spatial-page-title">Report Item</h1>
+        <p className="spatial-page-subtitle">
+          Submit details for a lost or recovered belonging to initiate automated similarity matching.
+        </p>
+      </div>
 
       {error && (
-        <div className="error-message">
-          <AlertCircle size={20} />
+        <div className="spatial-alert-pill alert-error" style={{ marginBottom: '1.5rem' }}>
+          <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="report-form">
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="type">Type</label>
-            <select
-              id="type"
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              required
-            >
-              <option value="lost">Lost</option>
-              <option value="found">Found</option>
-            </select>
+      <GlassPanel elevation="elevated" className="report-glass-panel">
+        <form onSubmit={handleSubmit}>
+          {/* Segmented Type Switch */}
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+            <label className="qr-form-label">Report Type</label>
+            <div className="spatial-segmented-capsule">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, type: 'lost' })}
+                className={`segmented-pill-btn ${formData.type === 'lost' ? 'segmented-active' : ''}`}
+              >
+                I Lost an Item
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, type: 'found' })}
+                className={`segmented-pill-btn ${formData.type === 'found' ? 'segmented-active' : ''}`}
+              >
+                I Found an Item
+              </button>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="category">Category</label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            >
-              <option value="ID Card">ID Card</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Books">Books</option>
-              <option value="Clothing">Clothing</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
+          <div className="form-row-2col">
+            <div className="filter-cell" style={{ marginBottom: '1.25rem' }}>
+              <label className="filter-label" htmlFor="category">
+                <Tag size={14} /> Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="glass-select-input"
+                required
+              >
+                <option value="ID Card">ID Card</option>
+                <option value="Electronics">Electronics (Laptop, Phone, Charger)</option>
+                <option value="Books">Books &amp; Notebooks</option>
+                <option value="Keys">Keys &amp; Keychains</option>
+                <option value="Wallet">Wallet / Purse</option>
+                <option value="Clothing">Clothing &amp; Accessories</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
 
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
+            <div className="filter-cell" style={{ marginBottom: '1.25rem' }}>
+              <label className="filter-label" htmlFor="campusZone">
+                <MapPin size={14} /> Campus Zone / Hotspot
+              </label>
+              <select
+                id="campusZone"
+                name="campusZone"
+                value={formData.campusZone}
+                onChange={handleChange}
+                className="glass-select-input"
+                required
+              >
+                <option value="Central Library">Central Library</option>
+                <option value="Engineering / Tech Block">Engineering / Tech Block</option>
+                <option value="Cafeteria / Food Court">Cafeteria / Food Court</option>
+                <option value="Sports Complex & Gym">Sports Complex & Gym</option>
+                <option value="Main Auditorium">Main Auditorium</option>
+                <option value="Student Hostels">Student Hostels</option>
+                <option value="Main Entrance Gate">Main Entrance Gate</option>
+                <option value="General Campus Area">General Campus Area</option>
+              </select>
+            </div>
+          </div>
+
+          <GlassInput
             id="title"
             name="title"
+            label="Item Title"
             value={formData.title}
             onChange={handleChange}
             required
-            placeholder="e.g., Black Lenovo Laptop"
+            placeholder="e.g. Midnight Blue Dell XPS 15"
           />
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            rows="4"
-            placeholder="Provide detailed description..."
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="location">Location</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <label className="qr-form-label">Detailed Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               required
-              placeholder="e.g., Library, CSE Block"
+              rows="4"
+              className="spatial-textarea"
+              placeholder="Describe distinctive marks, brand, model, stickers, or unique scratches..."
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="dateLostOrFound">Date Lost/Found</label>
-            <input
-              type="date"
+          <div className="form-row-2col">
+            <GlassInput
+              id="location"
+              name="location"
+              label="Specific Spot / Room"
+              icon={MapPin}
+              value={formData.location}
+              onChange={handleChange}
+              required
+              placeholder="e.g. 2nd Floor Study Room Desk 14"
+            />
+
+            <GlassInput
               id="dateLostOrFound"
               name="dateLostOrFound"
+              type="date"
+              label={`Date ${formData.type === 'lost' ? 'Lost' : 'Found'}`}
+              icon={Calendar}
               value={formData.dateLostOrFound}
               onChange={handleChange}
             />
           </div>
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="image">Upload Image</label>
-          <div className="image-upload">
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="image" className="upload-label">
-              <Upload size={24} />
-              <span>{imageFile ? imageFile.name : 'Choose an image'}</span>
-            </label>
-          </div>
-          {imagePreview && (
-            <div className="image-preview">
-              <img src={imagePreview} alt="Preview" />
+          {/* Anti-Fraud Security Question */}
+          <GlassInput
+            id="secretQuestion"
+            name="secretQuestion"
+            label="Anti-Fraud Security Question (Optional for Found Items)"
+            icon={ShieldQuestion}
+            value={formData.secretQuestion}
+            onChange={handleChange}
+            placeholder="e.g. What sticker is on the back? What is the wallpaper image?"
+          />
+
+          {/* Image Upload Area */}
+          <div style={{ marginBottom: '1.75rem' }}>
+            <label className="qr-form-label">Upload Photographic Evidence</label>
+            <div className="spatial-dropzone">
+              <input
+                type="file"
+                id="image-file-input"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="image-file-input" className="spatial-dropzone-label gaze-target">
+                <Upload size={24} className="dropzone-icon" />
+                <span>{imageFile ? imageFile.name : 'Choose an image file from device'}</span>
+              </label>
+
+              {imagePreview && (
+                <div className="spatial-image-preview-box">
+                  <img src={imagePreview} alt="Upload preview" />
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
 
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Submitting...' : 'Report Item'}
-        </button>
-      </form>
+          <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+            <GlassButton
+              type="submit"
+              variant="primary"
+              size="lg"
+              disabled={loading}
+              style={{ width: '100%' }}
+            >
+              {loading ? 'Submitting & Computing Similarity...' : 'Publish Item to Spatial Database'}
+            </GlassButton>
+          </div>
+        </form>
+      </GlassPanel>
     </div>
   );
 };

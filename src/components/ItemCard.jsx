@@ -1,55 +1,71 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Calendar, Tag } from 'lucide-react';
+import { MapPin, Calendar, Tag, CheckCircle2, Compass } from 'lucide-react';
 
-const ItemCard = ({ item }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'open':
-        return 'status-open';
-      case 'matched':
-        return 'status-matched';
-      case 'closed':
-        return 'status-closed';
-      default:
-        return 'status-open';
-    }
-  };
+export const ItemCard = ({ item }) => {
+  const isLost = item.type === 'lost';
 
   return (
-    <Link to={`/items/${item._id}`} className="item-card">
-      <div className="item-card-image">
+    <Link to={`/items/${item._id}`} className="spatial-item-card vision-glass-card gaze-target">
+      {/* Visual Image Preview with Layered Status Chips */}
+      <div className="spatial-card-media">
         {item.imageUrl ? (
-          <img src={item.imageUrl} alt={item.title} />
+          <img src={item.imageUrl} alt={item.title} loading="lazy" />
         ) : (
-          <div className="item-card-placeholder">No Image</div>
+          <div className="spatial-card-placeholder">
+            <span>No Image Preview</span>
+          </div>
         )}
-        <span className={`item-badge ${getStatusColor(item.status)}`}>
-          {item.status}
-        </span>
+
+        {/* Floating Glass Chips inside Media */}
+        <div className="spatial-media-badges">
+          <span className={`spatial-type-chip ${isLost ? 'chip-lost' : 'chip-found'}`}>
+            {item.type?.toUpperCase()}
+          </span>
+
+          <span className={`spatial-status-chip status-${item.status}`}>
+            {item.status?.toUpperCase()}
+          </span>
+        </div>
       </div>
 
-      <div className="item-card-content">
-        <h3 className="item-card-title">{item.title}</h3>
-        <p className="item-card-description">{item.description}</p>
+      {/* Card Content Details */}
+      <div className="spatial-card-body">
+        <div className="spatial-card-header">
+          <h3 className="spatial-card-title">{item.title}</h3>
+          {item.isVerified && (
+            <span className="spatial-verified-pill" title="Admin Verified Post">
+              <CheckCircle2 size={13} />
+            </span>
+          )}
+        </div>
 
-        <div className="item-card-details">
-          <div className="item-detail">
-            <Tag size={16} />
+        <p className="spatial-card-desc">{item.description}</p>
+
+        {/* Metadata Chips */}
+        <div className="spatial-card-meta-row">
+          <div className="meta-pill">
+            <Tag size={13} className="meta-icon" />
             <span>{item.category}</span>
           </div>
-          <div className="item-detail">
-            <MapPin size={16} />
-            <span>{item.location}</span>
+
+          <div className="meta-pill">
+            <MapPin size={13} className="meta-icon" />
+            <span className="meta-truncate">{item.location}</span>
           </div>
-          <div className="item-detail">
-            <Calendar size={16} />
+
+          {item.campusZone && item.campusZone !== 'General Campus Area' && (
+            <div className="meta-pill zone-pill">
+              <Compass size={13} className="meta-icon" />
+              <span className="meta-truncate">{item.campusZone}</span>
+            </div>
+          )}
+
+          <div className="meta-pill date-pill">
+            <Calendar size={13} className="meta-icon" />
             <span>{new Date(item.dateReported).toLocaleDateString()}</span>
           </div>
         </div>
-
-        {item.isVerified && (
-          <span className="verified-badge">Verified</span>
-        )}
       </div>
     </Link>
   );

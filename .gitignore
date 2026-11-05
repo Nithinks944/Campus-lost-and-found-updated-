@@ -20,4 +20,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Environment variables & secrets (NEVER COMMIT)
 .env
+.env.*
+*.env
+**/.env
+**/.env.*
+server/.env
+client/.env
+!.env.example
+!server/.env.example
+!client/.env.example

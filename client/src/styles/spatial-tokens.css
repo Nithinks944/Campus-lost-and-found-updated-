@@ -1,0 +1,205 @@
+/* ==========================================================================
+   visionOS SPATIAL DESIGN TOKENS
+   Apple Vision Pro-inspired glassmorphism, depth layers, and physics
+   ========================================================================== */
+
+:root {
+  /* Spatial Color Palette (Vision Dark Room default) */
+  --spatial-space-bg: #070a13;
+  --spatial-room-glow-1: rgba(37, 99, 235, 0.35); /* Electric Blue */
+  --spatial-room-glow-2: rgba(14, 165, 233, 0.28); /* Cyan / Sky */
+  --spatial-room-glow-3: rgba(249, 115, 22, 0.22); /* Warm Amber / Coral */
+  --spatial-room-glow-4: rgba(168, 85, 247, 0.20); /* Vision Purple */
+
+  /* Primary Glass Surface (Frosted Vision Glass) */
+  --glass-surface-base: rgba(255, 255, 255, 0.08);
+  --glass-surface-hover: rgba(255, 255, 255, 0.14);
+  --glass-surface-active: rgba(255, 255, 255, 0.20);
+  --glass-surface-elevated: rgba(255, 255, 255, 0.12);
+  --glass-surface-sunken: rgba(0, 0, 0, 0.25);
+
+  /* Specular Highlights & Bevels */
+  --glass-border-color: rgba(255, 255, 255, 0.22);
+  --glass-border-bright: rgba(255, 255, 255, 0.45);
+  --glass-highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  --glass-highlight-radial: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25), transparent 70%);
+
+  /* Spatial Shadows & Depth */
+  --glass-shadow-soft: 0 12px 36px -8px rgba(0, 0, 0, 0.4);
+  --glass-shadow-deep: 0 24px 64px -12px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(255, 255, 255, 0.15);
+  --glass-shadow-glow: 0 0 40px rgba(37, 99, 235, 0.35);
+  --glass-contact-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.65);
+
+  /* Blur & Saturation (Frosted Spec) */
+  --glass-blur-panel: blur(32px) saturate(190%);
+  --glass-blur-nav: blur(28px) saturate(180%);
+  --glass-blur-card: blur(24px) saturate(170%);
+  --glass-blur-subtle: blur(16px) saturate(150%);
+
+  /* Radii */
+  --radius-panel: 32px;
+  --radius-card: 22px;
+  --radius-pill: 9999px;
+  --radius-input: 16px;
+  --radius-icon: 50%;
+
+  /* Typography */
+  --font-spatial: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-tertiary: rgba(255, 255, 255, 0.48);
+  --text-accent: #60a5fa;
+
+  /* Accent & Interactive */
+  --accent-blue: #3b82f6;
+  --accent-blue-glow: rgba(59, 130, 246, 0.5);
+  --accent-cyan: #38bdf8;
+  --accent-green: #34d399;
+  --accent-amber: #fbbf24;
+  --accent-rose: #f43f5e;
+
+  /* Motion Physics */
+  --spring-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-duration-fast: 220ms;
+  --spring-duration-normal: 350ms;
+  --spring-duration-slow: 600ms;
+
+  /* 3D Depth Layers (translateZ) */
+  --z-background: 0px;
+  --z-rail: 20px;
+  --z-nav: 30px;
+  --z-panel: 40px;
+  --z-card: 50px;
+  --z-floating-hero: 80px;
+  --z-overlay: 100px;
+}
+
+/* Light Theme (Vision Day Room) */
+[data-theme="light"] {
+  --spatial-space-bg: #e2e8f0;
+  --spatial-room-glow-1: rgba(59, 130, 246, 0.22);
+  --spatial-room-glow-2: rgba(56, 189, 248, 0.20);
+  --spatial-room-glow-3: rgba(251, 146, 60, 0.18);
+  --spatial-room-glow-4: rgba(192, 132, 252, 0.15);
+
+  --glass-surface-base: rgba(255, 255, 255, 0.55);
+  --glass-surface-hover: rgba(255, 255, 255, 0.75);
+  --glass-surface-active: rgba(255, 255, 255, 0.88);
+  --glass-surface-elevated: rgba(255, 255, 255, 0.65);
+  --glass-surface-sunken: rgba(0, 0, 0, 0.06);
+
+  --glass-border-color: rgba(255, 255, 255, 0.85);
+  --glass-border-bright: #ffffff;
+  --glass-highlight-top: inset 0 1px 0 #ffffff;
+
+  --glass-shadow-soft: 0 12px 32px -8px rgba(15, 23, 42, 0.08);
+  --glass-shadow-deep: 0 24px 60px -12px rgba(15, 23, 42, 0.14), 0 0 1px 1px rgba(255, 255, 255, 0.8);
+  --glass-shadow-glow: 0 0 30px rgba(59, 130, 246, 0.2);
+  --glass-contact-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.15);
+
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.72);
+  --text-tertiary: rgba(15, 23, 42, 0.48);
+  --text-accent: #2563eb;
+}
+
+/* ==========================================================================
+   GLOBAL UTILITIES FOR SPATIAL GLASS
+   ========================================================================== */
+
+/* The spatial stage container */
+.spatial-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  font-family: var(--font-spatial);
+  color: var(--text-primary);
+  background-color: var(--spatial-space-bg);
+}
+
+/* Frosted glass baseline */
+.vision-glass {
+  background: var(--glass-surface-base);
+  backdrop-filter: var(--glass-blur-panel);
+  -webkit-backdrop-filter: var(--glass-blur-panel);
+  border: 1px solid var(--glass-border-color);
+  box-shadow: var(--glass-highlight-top), var(--glass-shadow-deep);
+  border-radius: var(--radius-panel);
+  transition: transform var(--spring-duration-normal) var(--spring-ease),
+              box-shadow var(--spring-duration-normal) var(--spring-ease),
+              background var(--spring-duration-normal) var(--spring-ease),
+              border-color var(--spring-duration-normal) var(--spring-ease);
+}
+
+/* Card variant */
+.vision-glass-card {
+  background: var(--glass-surface-base);
+  backdrop-filter: var(--glass-blur-card);
+  -webkit-backdrop-filter: var(--glass-blur-card);
+  border: 1px solid var(--glass-border-color);
+  box-shadow: var(--glass-highlight-top), var(--glass-shadow-soft);
+  border-radius: var(--radius-card);
+  transition: transform var(--spring-duration-normal) var(--spring-ease),
+              box-shadow var(--spring-duration-normal) var(--spring-ease),
+              background var(--spring-duration-normal) var(--spring-ease);
+}
+
+.vision-glass-card:hover {
+  background: var(--glass-surface-hover);
+  border-color: var(--glass-border-bright);
+  box-shadow: var(--glass-highlight-top), var(--glass-shadow-deep), var(--glass-shadow-glow);
+  transform: translateY(-4px) scale(1.015);
+}
+
+/* Nav Pill variant */
+.vision-glass-pill {
+  background: var(--glass-surface-base);
+  backdrop-filter: var(--glass-blur-nav);
+  -webkit-backdrop-filter: var(--glass-blur-nav);
+  border: 1px solid var(--glass-border-color);
+  box-shadow: var(--glass-highlight-top), var(--glass-shadow-soft);
+  border-radius: var(--radius-pill);
+  transition: all var(--spring-duration-fast) var(--spring-ease);
+}
+
+/* Floating gaze hover */
+.gaze-target {
+  transition: transform var(--spring-duration-normal) var(--spring-ease),
+              box-shadow var(--spring-duration-normal) var(--spring-ease),
+              border-color var(--spring-duration-normal) var(--spring-ease);
+  will-change: transform;
+}
+
+.gaze-target:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4), var(--glass-highlight-top);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.gaze-target:active {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: 100ms;
+}
+
+/* Solid fallback when backdrop-filter is unsupported */
+@supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .vision-glass, .vision-glass-card, .vision-glass-pill {
+    background: rgba(15, 23, 42, 0.94) !important;
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .spatial-stage {
+    perspective: none !important;
+  }
+}
+

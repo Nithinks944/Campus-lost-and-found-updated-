@@ -18,7 +18,7 @@ const itemSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['ID Card', 'Electronics', 'Books', 'Clothing', 'Other'],
+      enum: ['ID Card', 'Electronics', 'Books', 'Clothing', 'Keys', 'Wallet', 'Accessories', 'Other'],
       required: [true, 'Category is required'],
     },
     location: {
@@ -26,6 +26,49 @@ const itemSchema = new mongoose.Schema(
       required: [true, 'Location is required'],
       trim: true,
     },
+    campusZone: {
+      type: String,
+      enum: [
+        'Central Library',
+        'Engineering / Tech Block',
+        'Cafeteria / Food Court',
+        'Sports Complex & Gym',
+        'Main Auditorium',
+        'Student Hostels',
+        'Main Entrance Gate',
+        'General Campus Area',
+      ],
+      default: 'General Campus Area',
+    },
+    secretQuestion: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    claims: [
+      {
+        claimant: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        proofDescription: {
+          type: String,
+          required: true,
+        },
+        contactInfo: {
+          type: String,
+        },
+        status: {
+          type: String,
+          enum: ['pending', 'approved', 'rejected'],
+          default: 'pending',
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     dateReported: {
       type: Date,
       default: Date.now,

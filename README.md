@@ -2,6 +2,19 @@
 
 A full-stack web application that helps students report and find lost or found items on campus. The system features automatic matching between lost and found items using keyword similarity algorithms.
 
+## Software Development Methodology
+
+### Way 1: Tabular Representation
+| Process model (Module 1) | Prototype |
+| :--- | :--- |
+| Agile method (Module 2) | Scrum |
+
+### Way 2: List Representation
+- **Process model (Module 1):** Prototype
+- **Agile method (Module 2):** Scrum
+
+> Detailed comprehensive report available in [PROJECT_METHODOLOGY_REPORT.md](./PROJECT_METHODOLOGY_REPORT.md).
+
 ## Features
 
 - **User Authentication**: Secure registration and login with JWT
